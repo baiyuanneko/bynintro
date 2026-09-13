@@ -184,7 +184,15 @@
                     @mouseleave="hideTooltip"
                   >Java</mdui-chip>{{ sep }}
                   <mdui-chip icon="code" style="background-color: #fff3e0; color: #ef6c00;" class="my-0.5">Python</mdui-chip>{{ sep }}
-                  <mdui-chip icon="code" style="background-color: #ede7f6; color: #6a1b9a;" class="my-0.5">Vue</mdui-chip>{{ period }}
+                  <mdui-chip icon="code" style="background-color: #ede7f6; color: #6a1b9a;" class="my-0.5">Vue</mdui-chip>{{ sep }}
+                  <mdui-chip
+                    icon="code"
+                    style="background-color: #fbe9e7; color: #d84315;"
+                    class="my-0.5"
+                    @mouseenter="showTooltip($event, t('intro.techStack.rustTooltip'))"
+                    @mousemove="moveTooltip($event)"
+                    @mouseleave="hideTooltip"
+                  >Rust</mdui-chip>{{ period }}
                 </p>
                 <p class="content-card__body flex flex-wrap items-center gap-x-2 gap-y-2">
                   <span class="notebook-label w-20 md:w-32 shrink-0">{{ t('intro.devTools.label') }}</span>
@@ -193,7 +201,7 @@
                   <mdui-chip icon="terminal" style="background-color: #e0f2f1; color: #00695c;" class="my-0.5">VS Code</mdui-chip>{{ sep }}
                   <mdui-chip icon="terminal" style="background-color: #f1f8e9; color: #558b2f;" class="my-0.5">Kimi Code</mdui-chip>{{ sep }}
                   <mdui-chip icon="terminal" style="background-color: #f1f8e9; color: #558b2f;" class="my-0.5">ZCode</mdui-chip>{{ sep }}
-                  <mdui-chip icon="terminal" style="background-color: #f1f8e9; color: #558b2f;" class="my-0.5">OpenCode</mdui-chip>
+                  <mdui-chip icon="terminal" style="background-color: #f1f8e9; color: #558b2f;" class="my-0.5">Deepseek Harness</mdui-chip>
                   {{ period }}
                 </p>
                 <p class="content-card__body flex flex-wrap items-center gap-x-2 gap-y-2">
@@ -220,6 +228,8 @@
                 <p class="content-card__body flex flex-wrap items-center gap-x-2 gap-y-2">
                   <span class="notebook-label w-20 md:w-32 shrink-0">{{ t('intro.games.label') }}</span>
                   <span class="notebook-text">{{ t('intro.games.is') }}</span>
+                  <mdui-chip icon="sports_esports" style="background-color: #f3e5f5; color: #4a148c;" class="my-0.5">{{ t('games.rotaeno') }}</mdui-chip>{{ sep }}
+                  <mdui-chip icon="sports_esports" style="background-color: #f3e5f5; color: #4a148c;" class="my-0.5">maimai DX</mdui-chip>{{ sep }}
                   <mdui-chip
                     icon="sports_esports"
                     style="background-color: #f3e5f5; color: #4a148c;"
@@ -229,35 +239,42 @@
                     @mouseleave="hideTooltip"
                     @click="openFriendCodeDialog"
                   >{{ t('games.blueArchive') }}</mdui-chip>{{ sep }}
+                  <mdui-chip icon="sports_esports" style="background-color: #f3e5f5; color: #4a148c;" class="my-0.5">{{ t('games.minecraft') }}</mdui-chip>{{ sep }}
+                  <button
+                    v-if="!droppedGamesVisible"
+                    type="button"
+                    class="dropped-games-toggle"
+                    @click="droppedGamesVisible = true"
+                  >{{ t('games.showDroppedGames') }}</button>
+                  <template v-if="droppedGamesVisible">
                   <mdui-chip
                     icon="sports_esports"
-                    style="background-color: #f3e5f5; color: #4a148c;"
+                    style="background-color: #eceff1; color: #37474f;"
                     class="my-0.5"
                     @mouseenter="showTooltip($event, t('games.tooltip.cnUid'))"
                     @mousemove="moveTooltip($event)"
                     @mouseleave="hideTooltip"
                     @click="openUidDialog('games.neverness')"
-                  >{{ t('games.neverness') }}</mdui-chip>{{ sep }}
-                  <mdui-chip icon="sports_esports" style="background-color: #f3e5f5; color: #4a148c;" class="my-0.5">{{ t('games.minecraft') }}</mdui-chip>{{ sep }}
+                  >{{ t('games.neverness') }}{{ t('games.droppedSuffix') }}</mdui-chip>{{ sep }}
                   <mdui-chip
                     icon="sports_esports"
-                    style="background-color: #f3e5f5; color: #4a148c;"
+                    style="background-color: #eceff1; color: #37474f;"
                     class="my-0.5"
                     @mouseenter="showTooltip($event, t('games.tooltip.cnUid'))"
                     @mousemove="moveTooltip($event)"
                     @mouseleave="hideTooltip"
                     @click="openUidDialog('games.genshin', '276060503')"
-                  >{{ t('games.genshin') }}</mdui-chip>{{ sep }}
+                  >{{ t('games.genshin') }}{{ t('games.droppedSuffix') }}</mdui-chip>{{ sep }}
                   <mdui-chip
                     icon="sports_esports"
-                    style="background-color: #f3e5f5; color: #4a148c;"
+                    style="background-color: #eceff1; color: #37474f;"
                     class="my-0.5"
                     @mouseenter="showTooltip($event, t('games.tooltip.osuProfile'))"
                     @mousemove="moveTooltip($event)"
                     @mouseleave="hideTooltip"
                     @click="osuDialogVisible = true"
-                  >{{ t('games.osu') }}</mdui-chip>{{ sep }}
-                  <mdui-chip icon="sports_esports" style="background-color: #f3e5f5; color: #4a148c;" class="my-0.5">maimai DX</mdui-chip>
+                  >{{ t('games.osu') }}{{ t('games.droppedSuffix') }}</mdui-chip>
+                  </template>
                   <span class="notebook-text">{{ t('intro.games.player') }}</span>
                 </p>
                 </div>
@@ -699,12 +716,9 @@ const SITE_BIO   = computed(() => t('site.bio'))
 
 // ── Backgrounds ──────────────────────────────────────────────
 const FIRST_SCREEN_BACKGROUNDS = [
-  'https://assets-cdn.nekovanilla.top/bynintro/nanari-1.webp',
-  'https://assets-cdn.nekovanilla.top/bynintro/nanari-2.webp',
   'https://assets-cdn.nekovanilla.top/bynintro/saiba.webp',
-  'https://assets-cdn.nekovanilla.top/bynintro/kirara.webp',
   'https://assets-cdn.nekovanilla.top/bynintro/salt.webp',
-  'https://assets-cdn.nekovanilla.top/bynintro/mint2.webp',
+  'https://assets-cdn.nekovanilla.top/bynintro/rotaeno.webp',
 ]
 
 const currentIndex = ref(0)
@@ -754,6 +768,7 @@ const uidDialog = ref({ visible: false, titleKey: 'games.neverness', value: '220
 const uidCopied = ref(false)
 let uidResetTimer: ReturnType<typeof setTimeout> | null = null
 const osuDialogVisible = ref(false)
+const droppedGamesVisible = ref(false)
 
 function showTooltip(e: MouseEvent, text = 'Ciallo～(∠・ω< )⌒☆') {
   tooltip.value.text = text
@@ -1039,13 +1054,10 @@ function openFriendApplyDialog() {
 
 const waifus = [
   { nameKey: 'waifus.vanilla', tone: 'blue', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/vanilla-2.webp' },
+  { nameKey: 'waifus.yiluo', tone: 'purple', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/yiluo.webp' },
   { nameKey: 'waifus.salt', tone: 'pink', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/salt.webp' },
   { nameKey: 'waifus.plana', tone: 'purple', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/plana-2.webp' },
   { nameKey: 'waifus.kirara', tone: 'green', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/kirara.webp' },
-  { nameKey: 'waifus.sandrone', tone: 'blue', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/sdn.webp' },
-  { nameKey: 'waifus.columbina', tone: 'pink', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/Columbina.webp' },
-  { nameKey: 'waifus.nanaly', tone: 'red', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/nanari.webp' },
-  { nameKey: 'waifus.mint', tone: 'green', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/mint.webp' },
   { nameKey: 'waifus.momoi', tone: 'pink', avatar: 'https://assets-cdn.nekovanilla.top/bynintro/avatars/momoi.webp' },
 ]
 
@@ -2457,6 +2469,21 @@ function createRipple(e: MouseEvent, target: string = 'title') {
   color: #3a3532; /* 钢笔黑色墨水质感 */
   font-size: 15px;
   line-height: 1.6;
+}
+
+.dropped-games-toggle {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  color: #4a148c;
+  font-size: 15px;
+  line-height: 1.6;
+  text-decoration: underline dashed;
+  cursor: pointer;
+}
+
+.dropped-games-toggle:hover {
+  opacity: 0.75;
 }
 
 /* ── 悬浮按钮组:语言切换 + 无障碍(两屏常驻) ── */
