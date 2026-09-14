@@ -3,12 +3,12 @@
   <div
     class="page-slider"
     :class="a11yClass"
-    :style="{ transform: onSecondPage ? 'translateY(-100vh)' : 'translateY(0)' }"
+    :style="{ transform: onSecondPage ? 'translateY(calc(var(--page-h, 100vh) * -1))' : 'translateY(0)' }"
   >
     <!-- ═══════════════════════════════════════ -->
     <!--  PAGE 1 · First Screen                 -->
     <!-- ═══════════════════════════════════════ -->
-    <section class="relative w-screen h-screen overflow-hidden">
+    <section class="relative w-screen h-screen overflow-hidden" style="height: var(--page-h, 100vh);">
       <!-- Background layers, cross-fade -->
       <div
         v-for="(bg, i) in FIRST_SCREEN_BACKGROUNDS"
@@ -24,7 +24,7 @@
       <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
         <!-- Title Card -->
         <div
-          class="ripple-card wobble-card bg-gray-600/80 rounded-3xl px-16 py-10 text-white text-center"
+          class="ripple-card wobble-card bg-gray-600/80 rounded-3xl px-6 py-6 md:px-16 md:py-10 text-white text-center"
           style="box-shadow: 0 8px 40px 8px rgba(0,0,0,0.55), 0 2px 8px 0 rgba(0,0,0,0.4);"
           @mousedown="createRipple($event, 'title')"
           @click="goToSecondPage"
@@ -32,13 +32,13 @@
           @mousemove="moveTooltip($event)"
           @mouseleave="hideTooltip"
         >
-          <h1 class="text-6xl font-bold tracking-widest drop-shadow-lg select-none">{{ SITE_TITLE }}</h1>
+          <h1 class="hero-title font-bold tracking-widest drop-shadow-lg select-none">{{ SITE_TITLE }}</h1>
           <span v-for="r in ripples.title" :key="r.id" class="ripple-circle" :style="{ left: r.x + 'px', top: r.y + 'px' }"></span>
         </div>
 
         <!-- Bio Card -->
         <div
-          class="ripple-card wobble-card bg-gray-600/80 rounded-3xl px-10 py-4 text-white text-center"
+          class="ripple-card wobble-card bg-gray-600/80 rounded-3xl px-6 md:px-10 py-4 text-white text-center"
           style="box-shadow: 0 8px 40px 8px rgba(0,0,0,0.55), 0 2px 8px 0 rgba(0,0,0,0.4);"
           @mousedown="createRipple($event, 'bio')"
           @click="goToSecondPage"
@@ -82,6 +82,7 @@
     <!-- ═══════════════════════════════════════ -->
     <section
       class="relative w-screen h-screen flex flex-col overflow-hidden"
+      style="height: var(--page-h, 100vh);"
       :class="{ 'waifus-mode': activePage === 'waifus' || activePage === 'contact' || activePage === 'links' }"
     >
       <!-- Background layers (same slideshow, shared index) -->
@@ -1325,14 +1326,28 @@ function createRipple(e: MouseEvent, target: string = 'title') {
 <style scoped>
 /* ── Page slider ── */
 .page-slider {
+  /* 移动端 Chrome 地址栏会占用可视高度,100vh 会把页面底部顶出屏幕且 body 禁止滚动,
+     用 dvh(不支持时回退 100vh)让每页高度始终等于实际可视高度 */
+  --page-h: 100vh;
   width: 100vw;
   height: 200vh;
+  height: calc(var(--page-h) * 2);
   display: flex;
   flex-direction: column;
   transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
 }
+@supports (height: 100dvh) {
+  .page-slider {
+    --page-h: 100dvh;
+  }
+}
 
 /* ── Ripple ── */
+.hero-title {
+  /* 英文站名较长,小屏下用 clamp 缩字号防止标题卡片撑出屏幕 */
+  font-size: clamp(1.5rem, 8vw, 3.75rem);
+}
+
 .ripple-card {
   position: relative;
   overflow: hidden;
